@@ -49,7 +49,22 @@ O gerenciamento e o desenvolvimento do projeto seguem práticas ágeis para gara
 * **Extreme Programming (XP):** Aplicação de Desenvolvimento Orientado a Testes (TDD), revisões constantes de código e uso de checklists para validação dos critérios de aceite.
 
 ---
-
+## Estrutura do Projeto
+```
+sistema_de_gerencia_de_preços/
+├── docs/                   # Artefatos, especificações e documentação
+├── src/                    # Código-fonte da aplicação Django
+│   ├── config/             # Configurações globais do projeto
+│   ├── usuarios/           # Módulo de acesso e conta
+│   ├── catalogo/           # Módulo de produtos
+│   ├── mercados/           # Módulo de locais físicos
+│   ├── templates/          # Arquivos HTML compartilhados
+│   ├── static/             # CSS, imagens e JavaScript
+│   └── manage.py           # Orquestrador do Django
+├── .gitignore
+├── requirements.txt        # Dependências do Python
+└── README.md
+```
 ## Como Executar o Projeto Localmente
 
 Siga os passos abaixo para rodar a aplicação em seu ambiente de desenvolvimento:
