@@ -19,3 +19,18 @@ def test_deve_salvar_mercado_com_nome_e_endereco() -> None:
     
     # Assert
     assert mercado.nome == "Supermercado UnB"
+
+
+@pytest.mark.django_db
+def test_deve_salvar_mercado_com_coordenadas_gps() -> None:
+    # Arrange & Act
+    mercado = Mercado.objects.create(
+        nome="Carrefour Centro",
+        endereco="Setor Comercial Sul",
+        latitude=-15.7934,
+        longitude=-47.8823
+    )
+    
+    # Assert
+    assert float(mercado.latitude) == -15.7934
+    assert float(mercado.longitude) == -47.8823
