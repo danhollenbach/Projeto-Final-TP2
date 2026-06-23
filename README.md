@@ -4,7 +4,6 @@ Este é o repositório do projeto da disciplina de **Técnicas de Programação 
 
 O sistema é uma aplicação web voltada para ajudar os usuários a gerenciar listas de compras, compartilhar preços de produtos e encontrar as melhores ofertas em diferentes supermercados. A plataforma incentiva a colaboração social e possui ferramentas de administração para manter a consistência do catálogo de produtos e dos mercados cadastrados.
 
----
 
 ## Equipe Scrum
 
@@ -22,7 +21,6 @@ O time de desenvolvimento é composto pelos seguintes integrantes:
 | **Desenvolvedor** | Henrique Luz | 200061691 |
 | **Desenvolvedor** | Ricardo Pedrosa Ramos Filho | 242032587 |
 
----
 
 ## Tecnologias e Ferramentas
 
@@ -40,7 +38,6 @@ O projeto prioriza ferramentas gratuitas e de código aberto (Open Source), segu
 | **Documentação** | Doxygen, diagrams.net | Geração de documentação do código e criação de diagramas (UML, Fluxo). |
 | **Versionamento e Gestão** | Git, GitHub, GitHub Projects | Controle de versão, issues, branches e acompanhamento via Kanban/Scrum. |
 
----
 
 ## Metodologia
 
@@ -48,7 +45,6 @@ O gerenciamento e o desenvolvimento do projeto seguem práticas ágeis para gara
 * **Scrum & Kanban:** Utilizados para o planejamento das Sprints, distribuição de tarefas, acompanhamento do progresso e organização das Histórias de Usuário via GitHub Projects.
 * **Extreme Programming (XP):** Aplicação de Desenvolvimento Orientado a Testes (TDD), revisões constantes de código e uso de checklists para validação dos critérios de aceite.
 
----
 ## Estrutura do Projeto
 ```
 sistema_de_gerencia_de_preços/
@@ -98,7 +94,6 @@ python manage.py runserver
 
 O sistema estará disponível no seu navegador no endereço: `http://127.0.0.1:8000/`.
 
----
 
 ## Qualidade e Testes
 
