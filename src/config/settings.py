@@ -2,10 +2,11 @@
 """
 Módulo: Configuração (Core)
 Resumo: Arquivo principal de definições do projeto Django.
-Competência: Registra os aplicativos criados (usuarios, catalogo, mercados), 
-configura a conexão com o banco de dados SQLite, define variáveis de 
+Competência: Registra os aplicativos criados (usuarios, catalogo, mercados),
+configura a conexão com o banco de dados SQLite, define variáveis de
 ambiente, sistema de templates e middlewares de segurança.
 """
+
 from pathlib import Path
 
 # Caminho base do projeto (necessário para o SQLite saber onde criar o arquivo)
@@ -22,8 +23,6 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    
-    
     # Apps do projeto
     "users",
     "catalog",

@@ -8,10 +8,12 @@ Competencias: Permite que os administradores gerenciem os estabelecimentos diret
 from django.contrib import admin
 from .models import Mercado
 
+
 @admin.register(Mercado)
 class MercadoAdmin(admin.ModelAdmin):
     """
-        Configura a exibição e os filtros do modelo Mercado no painel de controle
+    Configura a exibição e os filtros do modelo Mercado no painel de controle
     """
+
     list_display = ("nome", "endereco", "latitude", "longitude")
     search_fields = ("nome", "endereco")
