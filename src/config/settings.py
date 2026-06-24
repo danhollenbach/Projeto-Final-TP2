@@ -17,8 +17,12 @@ DEBUG = True
 
 INSTALLED_APPS = [
     # Apps nativos essenciais para autenticação, testes e tabelas base
+    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    
     
     # Apps do projeto
     "users",

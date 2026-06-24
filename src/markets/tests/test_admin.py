@@ -13,5 +13,5 @@ def test_configuracao_do_mercado_admin() -> None:
     mercado_admin = site._registry.get(Mercado)
 
     assert mercado_admin is not None
-    assert mercado_admin.list_d == ("nome", "endereco", "latitude", "longitude")
+    assert mercado_admin.list_display == ("nome", "endereco", "latitude", "longitude")
     assert mercado_admin.search_fields == ("nome", "endereco")
