@@ -23,7 +23,8 @@ class SolicitacaoProduto(models.Model):
     marca = models.CharField(max_length=100, blank=True, null=True, verbose_name="Marca")
     codigo_barras = models.CharField(max_length=50, blank=True, null=True, verbose_name="Código de Barras")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDENTE', verbose_name="Status")
-    criado_em = models.DateTimeField(auto_index=False, auto_now_add=True, verbose_name="Data de Envio")
+    # Como deve ficar (removendo o auto_index):
+    criado_em = models.DateTimeField(auto_now_add=True, verbose_name="Data de Envio")
 
     class Meta:
         verbose_name = "Solicitação de Produto"

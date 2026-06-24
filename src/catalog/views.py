@@ -27,4 +27,4 @@ def solicitar_produto(request):
     else:
         form = SolicitacaoProdutoForm()
         
-    return render(request, 'produtos/solicitar_produto.html', {'form': form})
+    return render(request, 'catalog/solicitar_produto.html', {'form': form})
