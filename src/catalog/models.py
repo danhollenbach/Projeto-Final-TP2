@@ -5,6 +5,7 @@ Histórias relacionadas:
 - US-21 / Issue #10: aprovação e rejeição de solicitações de produtos.
 """
 
+from django.conf import settings
 from django.db import models
 
 
@@ -57,7 +58,15 @@ class SolicitacaoProduto(models.Model):
         APROVADA = "aprovada", "Aprovada"
         REJEITADA = "rejeitada", "Rejeitada"
 
-    nome = models.CharField(max_length=120)
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="solicitacoes_produto",
+        verbose_name="Usuário",
+    )
+    nome_produto = models.CharField(max_length=120)
     marca = models.CharField(max_length=120, blank=True)
     categoria = models.CharField(max_length=120, blank=True)
     codigo_barras = models.CharField(max_length=32)
@@ -88,12 +97,12 @@ class SolicitacaoProduto(models.Model):
         """Retorna a representação textual da solicitação.
 
         Assertivas de entrada:
-        - A solicitação possui um nome cadastrado.
+        - A solicitação possui um nome de produto cadastrado.
 
         Assertivas de saída:
-        - Retorna uma string com o nome e o status da solicitação.
+        - Retorna uma string com o nome do produto e o status da solicitação.
         """
-        return f"{self.nome} ({self.status})"
+        return f"{self.nome_produto} ({self.status})"
 
     def aprovar(self) -> Produto:
         """Aprova a solicitação e cria um produto no catálogo.
@@ -110,7 +119,7 @@ class SolicitacaoProduto(models.Model):
         produto, _criado = Produto.objects.get_or_create(
             codigo_barras=self.codigo_barras,
             defaults={
-                "nome": self.nome,
+                "nome": self.nome_produto,
                 "marca": self.marca,
                 "categoria": self.categoria,
                 "quantidade": self.quantidade,

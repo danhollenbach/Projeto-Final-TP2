@@ -32,7 +32,8 @@ class SolicitacaoProdutoAdmin(admin.ModelAdmin):
     """Administração de solicitações de produtos no Django Admin."""
 
     list_display = (
-        "nome",
+        "nome_produto",
+        "usuario",
         "marca",
         "categoria",
         "codigo_barras",
@@ -41,7 +42,7 @@ class SolicitacaoProdutoAdmin(admin.ModelAdmin):
         "status",
         "produto_criado",
     )
-    search_fields = ("nome", "marca", "codigo_barras")
+    search_fields = ("nome_produto", "marca", "codigo_barras")
     list_filter = ("categoria", "status")
     readonly_fields = ("produto_criado", "criado_em", "atualizado_em")
     actions = ("aprovar_solicitacoes", "rejeitar_solicitacoes")

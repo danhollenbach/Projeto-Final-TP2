@@ -61,7 +61,7 @@ def test_us21_admin_pode_aprovar_solicitacao_por_acao_admin(client):
     )
 
     solicitacao = SolicitacaoProduto.objects.create(
-        nome="Café Torrado",
+        nome_produto="Café Torrado",
         marca="Melitta",
         categoria="Bebidas",
         codigo_barras="7893333333333",
@@ -99,7 +99,7 @@ def test_us21_admin_pode_rejeitar_solicitacao_por_acao_admin(client):
     )
 
     solicitacao = SolicitacaoProduto.objects.create(
-        nome="Achocolatado",
+        nome_produto="Achocolatado",
         marca="Exemplo",
         categoria="Bebidas",
         codigo_barras="7894444444444",
