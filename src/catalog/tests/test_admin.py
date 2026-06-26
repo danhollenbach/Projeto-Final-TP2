@@ -27,10 +27,10 @@ def test_us20_admin_pode_acessar_tela_de_cadastro_de_produto(client):
     resposta = client.get(reverse("admin:catalog_produto_add"))
 
     assert resposta.status_code == 200
-    assert b"name=\"nome\"" in resposta.content
-    assert b"name=\"codigo_barras\"" in resposta.content
-    assert b"name=\"quantidade\"" in resposta.content
-    assert b"name=\"unidade_medida\"" in resposta.content
+    assert b'name="nome"' in resposta.content
+    assert b'name="codigo_barras"' in resposta.content
+    assert b'name="quantidade"' in resposta.content
+    assert b'name="unidade_medida"' in resposta.content
 
 
 @pytest.mark.django_db
