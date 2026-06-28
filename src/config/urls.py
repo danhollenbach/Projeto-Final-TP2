@@ -13,5 +13,6 @@ def home_view(request):
 urlpatterns = [
     path("", home_view, name="home"),
     path("admin/", admin.site.urls),
+    path("accounts/", include("src.users.urls")),
     path("catalog/", include("src.catalog.urls")),
 ]
