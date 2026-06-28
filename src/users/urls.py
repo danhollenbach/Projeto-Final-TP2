@@ -25,4 +25,9 @@ urlpatterns = [
         views.protected_view,
         name="protected",
     ),
+    path(
+        "register/",
+        views.register_view,
+        name="register",
+    ),
 ]
