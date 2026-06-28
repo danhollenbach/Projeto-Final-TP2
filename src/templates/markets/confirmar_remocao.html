@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmar Remoção</title>
+</head>
+<body>
+    <h1>Confirmar Remoção</h1>
+    <p>Tem certeza que deseja remover o mercado <strong>{{ mercado.nome }}</strong>?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Confirmar</button>
+        <a href="/">Cancelar</a>
+    </form>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Mercado</title>
+</head>
+<body>
+    <h1>Editar Mercado</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Salvar</button>
+        <a href="/">Cancelar</a>
+    </form>
+</body>
+</html>
