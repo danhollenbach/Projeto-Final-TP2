@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 from django.http import HttpResponse
-from django.urls import path
+from django.urls import include, path
 
 
 def home_view(request):
@@ -13,4 +13,6 @@ def home_view(request):
 urlpatterns = [
     path("", home_view, name="home"),
     path("admin/", admin.site.urls),
+    path("accounts/", include("src.users.urls")),
+    path("catalog/", include("src.catalog.urls")),
 ]

@@ -104,8 +104,8 @@ class SolicitacaoProduto(models.Model):
         """
         return f"{self.nome_produto} ({self.status})"
 
-    def aprovar(self) -> Produto:
-        """Aprova a solicitação e cria um produto no catálogo.
+    def aprovar(self):
+        """Aprova a solicitação e cria ou reutiliza um produto no catálogo.
 
         Assertivas de entrada:
         - A solicitação deve estar pendente.
@@ -114,8 +114,13 @@ class SolicitacaoProduto(models.Model):
         Assertivas de saída:
         - Um Produto é criado ou reutilizado pelo código de barras.
         - A solicitação passa para o status aprovada.
-        - A solicitação guarda referência ao produto criado.
+        - A solicitação guarda referência ao produto criado ou reutilizado.
         """
+        self.refresh_from_db()
+
+        if self.status != self.Status.PENDENTE:
+            raise ValueError("Apenas solicitações pendentes podem ser aprovadas.")
+
         produto, _criado = Produto.objects.get_or_create(
             codigo_barras=self.codigo_barras,
             defaults={
@@ -134,15 +139,20 @@ class SolicitacaoProduto(models.Model):
 
         return produto
 
-    def rejeitar(self) -> None:
+    def rejeitar(self):
         """Rejeita a solicitação sem criar produto.
 
         Assertivas de entrada:
-        - A solicitação deve existir no banco.
+        - A solicitação deve estar pendente.
 
         Assertivas de saída:
         - A solicitação passa para o status rejeitada.
         - Nenhum produto é criado por este método.
         """
+        self.refresh_from_db()
+
+        if self.status != self.Status.PENDENTE:
+            raise ValueError("Apenas solicitações pendentes podem ser rejeitadas.")
+
         self.status = self.Status.REJEITADA
         self.save(update_fields=["status", "atualizado_em"])
