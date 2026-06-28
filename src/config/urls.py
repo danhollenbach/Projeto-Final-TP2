@@ -1,15 +1,18 @@
-# src/config/urls.py
-"""
-Módulo: Configuração (Core)
-Resumo: Roteador principal do sistema.
-Competência: Ponto de entrada das URLs do site. Encaminha as requisições 
-baseadas em prefixos (ex: '/auth/...' vai para urls de usuarios, 
-'/produtos/...' vai para urls do catalogo) para manter a modularização.
-"""
+﻿"""Rotas principais do projeto."""
+
 from django.contrib import admin
-from django.urls import path, include
+from django.http import HttpResponse
+from django.urls import include, path
+
+
+def home_view(request):
+    """Página inicial simples para verificar se o projeto está rodando."""
+    return HttpResponse("Sistema de Gerência de Compras")
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('catalogo/', include('catalog.urls')), # Conecta as rotas do seu app!
+    path("", home_view, name="home"),
+    path("admin/", admin.site.urls),
+    path("accounts/", include("src.users.urls")),
+    path("catalog/", include("src.catalog.urls")),
 ]

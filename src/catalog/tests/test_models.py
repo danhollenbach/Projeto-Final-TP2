@@ -1,4 +1,7 @@
-# src/catalog/tests/test_models.py
+﻿"""Testes do catálogo de produtos.
+
+Histórias relacionadas:
+- US-20 / Issue #7: cadastro administrativo de produtos.
 """
 Módulo: Catálogo (Testes)
 Resumo: Suíte de testes automatizados (TDD) para as regras de produtos.

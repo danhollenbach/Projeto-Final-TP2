@@ -1,4 +1,8 @@
-# src/catalog/models.py
+﻿"""Modelos do catálogo.
+
+Histórias relacionadas:
+- US-20 / Issue #7: cadastro administrativo de produtos.
+- US-21 / Issue #10: aprovação e rejeição de solicitações de produtos.
 """
 Módulo: Catálogo
 Resumo: Define as entidades de Produtos e Solicitações de Novos Produtos.
