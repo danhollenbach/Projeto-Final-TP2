@@ -156,3 +156,38 @@ class SolicitacaoProduto(models.Model):
 
         self.status = self.Status.REJEITADA
         self.save(update_fields=["status", "atualizado_em"])
+
+
+class AvaliacaoProduto(models.Model):
+    """Avaliação de um produto feita por um usuário.
+    
+    Garante que a nota esteja entre 1 e 5 e que um usuário 
+    avalie o mesmo produto apenas uma vez.
+    """
+    produto = models.ForeignKey(
+        Produto, 
+        on_delete=models.CASCADE, 
+        related_name="avaliacoes"
+    )
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        related_name="avaliacoes_feitas"
+    )
+    nota = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        verbose_name="Nota (1 a 5)"
+    )
+    comentario = models.TextField(blank=True, verbose_name="Comentário")
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Avaliação de Produto"
+        verbose_name_plural = "Avaliações de Produtos"
+        ordering = ["-criado_em"]
+        # Garante que o usuário só possa avaliar o mesmo produto uma única vez
+        unique_together = ("produto", "usuario") 
+
+    def __str__(self) -> str:
+        return f"Avaliação de {self.usuario.username} para {self.produto.nome} - Nota: {self.nota}"

@@ -65,3 +65,32 @@ class SolicitacaoProdutoForm(forms.ModelForm):
                 }
             ),
         }
+
+
+
+from src.catalog.models import SolicitacaoProduto, AvaliacaoProduto
+
+
+class AvaliacaoProdutoForm(forms.ModelForm):
+    """Formulário para avaliar um produto cadastrado."""
+
+    class Meta:
+        model = AvaliacaoProduto
+        fields = ["nota", "comentario"]
+        widgets = {
+            "nota": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "min": "1",
+                    "max": "5",
+                    "placeholder": "De 1 a 5",
+                }
+            ),
+            "comentario": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Deixe sua opinião sobre o produto (opcional).",
+                    "rows": 3,
+                }
+            ),
+        }
