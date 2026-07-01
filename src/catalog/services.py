@@ -10,11 +10,11 @@ produtos duplicados.
 
 from django.db.models import QuerySet
 from django.core.exceptions import ValidationError
+from django.db import transaction
+from .models import Produto, SolicitacaoProduto
 
-from .models import Produto
 
-
-def _find_by_barcode(produto: Produto) -> QuerySet[Produto]:
+def _encontrar_codigo_barras(produto: Produto) -> QuerySet[Produto]:
     """
     Busca produtos com o mesmo código de barras.
 
@@ -30,7 +30,7 @@ def _find_by_barcode(produto: Produto) -> QuerySet[Produto]:
     ).exclude(pk=produto.pk)
 
 
-def _find_by_attributes(produto: Produto) -> QuerySet[Produto]:
+def _encontrar_produtos_semelhantes(produto: Produto) -> QuerySet[Produto]:
     """
     Busca produtos semelhantes utilizando atributos do catálogo.
 
@@ -49,7 +49,7 @@ def _find_by_attributes(produto: Produto) -> QuerySet[Produto]:
     ).exclude(pk=produto.pk)
 
 
-def find_duplicate_candidates(produto: Produto) -> QuerySet[Produto]:
+def _encontrar_possiveis_duplicados(produto: Produto) -> QuerySet[Produto]:
     """
     Retorna possíveis produtos duplicados.
 
@@ -61,16 +61,16 @@ def find_duplicate_candidates(produto: Produto) -> QuerySet[Produto]:
     O resultado é um QuerySet sem registros repetidos.
     """
 
-    barcode_matches = _find_by_barcode(produto)
+    codigo_barras = _encontrar_codigo_barras(produto)
 
-    attribute_matches = _find_by_attributes(produto)
+    atributos_semelhantes = _encontrar_produtos_semelhantes(produto)
 
-    return (barcode_matches | attribute_matches).distinct()
+    return (codigo_barras | atributos_semelhantes).distinct()
 
 
-def _validate_products(
+def _validar_produtos(
     principal: Produto,
-    duplicate: Produto,
+    duplicado: Produto,
 ) -> None:
     """
     Valida se ambos os produtos foram informados.
@@ -81,27 +81,27 @@ def _validate_products(
             "O produto principal deve ser informado."
         )
 
-    if duplicate is None:
+    if duplicado is None:
         raise ValidationError(
             "O produto duplicado deve ser informado."
         )
     
-def _validate_same_product(
+def _validar_mesmo_produto(
     principal: Produto,
-    duplicate: Produto,
+    duplicado: Produto,
 ) -> None:
     """
     Impede que um produto seja unificado consigo mesmo.
     """
 
-    if principal.pk == duplicate.pk:
+    if principal.pk == duplicado.pk:
         raise ValidationError(
             "Um produto não pode ser unificado com ele mesmo."
         )
 
-def _validate_barcodes(
+def _validar_codigo_barras(
     principal: Produto,
-    duplicate: Produto,
+    duplicado: Produto,
 ) -> None:
     """
     Garante consistência entre os códigos de barras.
@@ -109,13 +109,13 @@ def _validate_barcodes(
 
     if (
         principal.codigo_barras
-        and duplicate.codigo_barras
-        and principal.codigo_barras != duplicate.codigo_barras
+        and duplicado.codigo_barras
+        and principal.codigo_barras != duplicado.codigo_barras
     ):
         raise ValidationError(
             "Produtos com códigos de barras diferentes não podem ser unificados."
         )
-def _validate_active_product(
+def _validar_produto_ativo(
     principal: Produto,
 ) -> None:
     """
@@ -127,39 +127,35 @@ def _validate_active_product(
             "O produto principal deve estar ativo."
         )
 
-def merge_products(
-    principal,
-    duplicate,
+def unificar_produtos(
+    principal: Produto,
+    duplicado: Produto,
 ):
 
-    _validate_products(
+    _validar_produtos(
         principal,
-        duplicate,
+        duplicado,
     )
 
-    _validate_same_product(
+    _validar_mesmo_produto(
         principal,
-        duplicate,
+        duplicado,
     )
 
-    _validate_barcodes(
+    _validar_codigo_barras(
         principal,
-        duplicate,
+        duplicado,
     )
 
-    _validate_active_product(
+    _validar_produto_ativo(
         principal,
     )
-
-from django.db import transaction
-
-from .models import Produto, SolicitacaoProduto
 
 
 @transaction.atomic
-def merge_products(
+def unificar_produtos(
     principal: Produto,
-    duplicate: Produto,
+    duplicado: Produto,
 ) -> Produto:
     """
     Unifica dois produtos do catálogo.
@@ -169,17 +165,17 @@ def merge_products(
     duplicado é removido do catálogo.
     """
 
-    _validate_products(principal, duplicate)
-    _validate_same_product(principal, duplicate)
-    _validate_barcodes(principal, duplicate)
-    _validate_active_product(principal)
+    _validar_produtos(principal, duplicado)
+    _validar_mesmo_produto(principal, duplicado)
+    _validar_codigo_barras(principal, duplicado)
+    _validar_produto_ativo(principal)
 
     SolicitacaoProduto.objects.filter(
-        produto_criado=duplicate
+        produto_criado=duplicado
     ).update(
         produto_criado=principal
     )
 
-    duplicate.delete()
+    duplicado.delete()
 
     return principal
