@@ -6,7 +6,9 @@ Histórias relacionadas:
 """
 
 from django.contrib import admin, messages
+from django.core.exceptions import ValidationError
 
+from .services import unificar_produtos
 from src.catalog.models import Produto, SolicitacaoProduto
 
 @admin.register(Produto)
@@ -24,33 +26,58 @@ class ProdutoAdmin(admin.ModelAdmin):
     )
     search_fields = ("nome", "marca", "codigo_barras")
     list_filter = ("categoria", "ativo")
-    
-    # Registra a nova action no painel
-    actions = ["unificar_produtos"]
+    actions = ("merge_selected_products",)
 
-    @admin.action(description="Unificar produtos duplicados (mantém o mais antigo)")
-    def unificar_produtos(self, request, queryset):
-        """Unifica produtos selecionados, mantendo o registro mais antigo e preservando as relações."""
-        if queryset.count() < 2:
+    @admin.action(description="Unificar produtos selecionados")
+    def unificar_produtos_selecionados(
+        self,
+        request,
+        queryset,
+    ):
+        """
+        Unifica dois produtos selecionados.
+
+        Assertivas de entrada:
+        - Devem existir exatamente dois produtos selecionados.
+
+        Assertivas de saída:
+        - Todas as referências passam a apontar para o produto principal.
+        - O produto duplicado é removido.
+        """
+
+        if queryset.count() != 2:
+
             self.message_user(
                 request,
-                "Selecione pelo menos 2 produtos para realizar a unificação.",
+                "Selecione exatamente dois produtos para realizar a unificação.",
                 level=messages.ERROR,
             )
             return
 
-        # Ordena pela data de criação para definir o produto principal (o mais antigo)
-        produtos = list(queryset.order_by("criado_em"))
-        produto_principal = produtos[0]
-        produtos_duplicados = produtos[1:]
+        produtos = queryset.order_by("id")
 
-        for duplicado in produtos_duplicados:
-            # 1. Transfere os relacionamentos existentes (ex: Solicitações de Produto)
-            # Caso implemente outras FKs no futuro (Avaliações, Preços), adicione o update() delas aqui.
-            duplicado.solicitacoes_origem.update(produto_criado=produto_principal)
-            
-            # 2. Apaga o registro duplicado de forma segura
-            duplicado.delete()
+        principal = produtos.first()
+        duplicado = produtos.last()
+
+        try:
+            unificar_produtos(principal, duplicado)
+
+            self.message_user(
+                request,
+                (
+                    f'Produto "{duplicado.nome}" '
+                    f'unificado com sucesso em '
+                    f'"{principal.nome}".'
+                ),
+                level=messages.SUCCESS,
+            )
+
+        except ValidationError as exc:
+            self.message_user(
+                request,
+                str(exc),
+                level=messages.ERROR,
+            )
 
         self.message_user(
             request,
