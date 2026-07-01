@@ -1,7 +1,8 @@
 import pytest
 from django.urls import reverse
 from django.contrib.auth.models import User
-from catalog.models import SolicitacaoProduto
+#from catalog.models import SolicitacaoProduto
+from src.catalog.models import SolicitacaoProduto
 
 @pytest.mark.django_db
 class TestSolicitacaoProdutoView:
@@ -15,7 +16,7 @@ class TestSolicitacaoProdutoView:
 
     def test_acesso_negado_para_usuario_anonimo(self, client):
         """Garante que usuários não logados sejam redirecionados (Código 302)"""
-        url = reverse('solicitar_produto')
+        url = reverse('catalog:solicitar_produto')
         response = client.get(url)
         
         assert response.status_code == 302
@@ -24,7 +25,8 @@ class TestSolicitacaoProdutoView:
     def test_acesso_permitido_para_usuario_logado(self, user_client):
         """Garante que a página carregue (Código 200) para quem está autenticado"""
         client, user = user_client
-        url = reverse('solicitar_produto')
+        #url = reverse('solicitar_produto')
+        url = reverse('catalog:solicitar_produto')
         response = client.get(url)
         
         assert response.status_code == 200
@@ -33,12 +35,16 @@ class TestSolicitacaoProdutoView:
     def test_submissao_valida_de_solicitacao(self, user_client):
         """Testa o caminho feliz: envio do formulário salvando no banco"""
         client, user = user_client
-        url = reverse('solicitar_produto')
+        url = reverse('catalog:solicitar_produto')
         
         dados_formulario = {
             'nome_produto': 'Macarrão Espaguete',
             'marca': 'Barilla',
-            'codigo_barras': '8076809512345'
+            'categoria': 'Alimentos',
+            'codigo_barras': '8076809512345',
+            'quantidade': '500',
+            'unidade_medida': 'g',
+            'descricao': 'Teste',
         }
         
         response = client.post(url, data=dados_formulario)
@@ -57,7 +63,7 @@ class TestSolicitacaoProdutoView:
     def test_submissao_invalida_sem_nome_produto(self, user_client):
         """Testa validação: envio sem o campo obrigatório (nome) não deve salvar"""
         client, user = user_client
-        url = reverse('solicitar_produto')
+        url = reverse('catalog:solicitar_produto')
         
         dados_formulario = {
             'nome_produto': '', # Campo vazio propositalmente
