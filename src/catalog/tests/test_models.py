@@ -3,6 +3,7 @@
 Histórias relacionadas:
 - US-20 / Issue #7: cadastro administrativo de produtos.
 """
+"""
 Módulo: Catálogo (Testes)
 Resumo: Suíte de testes automatizados (TDD) para as regras de produtos.
 Competência: Garantir que o banco de dados não aceite dois produtos 
@@ -12,7 +13,7 @@ status de uma Solicitação (Pendente -> Aceito/Rejeitado).
 
 import pytest
 from django.contrib.auth.models import User
-from catalog.models import SolicitacaoProduto
+from src.catalog.models import SolicitacaoProduto
 
 @pytest.mark.django_db
 class TestSolicitacaoProdutoModel:

@@ -11,7 +11,6 @@ from django.core.exceptions import ValidationError
 from .services import unificar_produtos
 from src.catalog.models import Produto, SolicitacaoProduto
 
-
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
     """Administração de produtos no Django Admin."""
@@ -80,6 +79,11 @@ class ProdutoAdmin(admin.ModelAdmin):
                 level=messages.ERROR,
             )
 
+        self.message_user(
+            request,
+            f"Unificação concluída com sucesso! Os dados foram migrados para o produto: {produto_principal.nome} (ID: {produto_principal.id}).",
+            level=messages.SUCCESS,
+        )
 
 @admin.register(SolicitacaoProduto)
 class SolicitacaoProdutoAdmin(admin.ModelAdmin):
@@ -113,6 +117,8 @@ class SolicitacaoProdutoAdmin(admin.ModelAdmin):
         - Um produto é criado ou reutilizado para cada solicitação aprovada.
         """
         for solicitacao in queryset:
+            solicitacao.status = SolicitacaoProduto.Status.APROVADO
+            solicitacao.save()
             solicitacao.aprovar()
 
     @admin.action(description="Rejeitar solicitações selecionadas")
@@ -127,4 +133,6 @@ class SolicitacaoProdutoAdmin(admin.ModelAdmin):
         - Nenhum produto é criado por esta ação.
         """
         for solicitacao in queryset:
+            solicitacao.status = SolicitacaoProduto.Status.REJEITADO # <--- REJEITADO
+            solicitacao.save()
             solicitacao.rejeitar()

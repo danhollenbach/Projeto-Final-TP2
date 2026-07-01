@@ -39,7 +39,7 @@ def test_us21_solicitacao_aprovada_cria_produto():
     produto = solicitacao.aprovar()
     solicitacao.refresh_from_db()
 
-    assert solicitacao.status == SolicitacaoProduto.Status.APROVADA
+    assert solicitacao.status == SolicitacaoProduto.Status.APROVADO
     assert solicitacao.produto_criado == produto
     assert produto.nome == "Feijão Carioca"
     assert produto.codigo_barras == "7891111111111"
@@ -68,7 +68,7 @@ def test_us21_solicitacao_aprovada_reutiliza_produto_existente():
 
     assert produto == produto_existente
     assert Produto.objects.filter(codigo_barras="7892222222222").count() == 1
-    assert solicitacao.status == SolicitacaoProduto.Status.APROVADA
+    assert solicitacao.status == SolicitacaoProduto.Status.APROVADO
     assert solicitacao.produto_criado == produto_existente
 
 
@@ -83,7 +83,7 @@ def test_us21_solicitacao_rejeitada_nao_cria_produto():
     solicitacao.rejeitar()
     solicitacao.refresh_from_db()
 
-    assert solicitacao.status == SolicitacaoProduto.Status.REJEITADA
+    assert solicitacao.status == SolicitacaoProduto.Status.REJEITADO
     assert not Produto.objects.filter(codigo_barras="7893333333333").exists()
 
 
@@ -123,7 +123,7 @@ def test_us21_solicitacao_aprovada_nao_pode_ser_rejeitada():
     solicitacao.aprovar()
     solicitacao.refresh_from_db()
 
-    assert solicitacao.status == SolicitacaoProduto.Status.APROVADA
+    assert solicitacao.status == SolicitacaoProduto.Status.APROVADO
 
     with pytest.raises(ValueError, match="Apenas solicitações pendentes"):
         solicitacao.rejeitar()
@@ -140,7 +140,7 @@ def test_us21_solicitacao_rejeitada_nao_pode_ser_aprovada():
     solicitacao.rejeitar()
     solicitacao.refresh_from_db()
 
-    assert solicitacao.status == SolicitacaoProduto.Status.REJEITADA
+    assert solicitacao.status == SolicitacaoProduto.Status.REJEITADO
 
     with pytest.raises(ValueError, match="Apenas solicitações pendentes"):
         solicitacao.aprovar()
