@@ -5,10 +5,11 @@ Histórias relacionadas:
 - US-21 / Issue #10: aprovação e rejeição de solicitações pelo administrador.
 """
 
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.core.exceptions import ValidationError
 
+from .services import unificar_produtos
 from src.catalog.models import Produto, SolicitacaoProduto
-
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
@@ -25,7 +26,64 @@ class ProdutoAdmin(admin.ModelAdmin):
     )
     search_fields = ("nome", "marca", "codigo_barras")
     list_filter = ("categoria", "ativo")
+    actions = ("merge_selected_products",)
 
+    @admin.action(description="Unificar produtos selecionados")
+    def unificar_produtos_selecionados(
+        self,
+        request,
+        queryset,
+    ):
+        """
+        Unifica dois produtos selecionados.
+
+        Assertivas de entrada:
+        - Devem existir exatamente dois produtos selecionados.
+
+        Assertivas de saída:
+        - Todas as referências passam a apontar para o produto principal.
+        - O produto duplicado é removido.
+        """
+
+        if queryset.count() != 2:
+
+            self.message_user(
+                request,
+                "Selecione exatamente dois produtos para realizar a unificação.",
+                level=messages.ERROR,
+            )
+            return
+
+        produtos = queryset.order_by("id")
+
+        principal = produtos.first()
+        duplicado = produtos.last()
+
+        try:
+            unificar_produtos(principal, duplicado)
+
+            self.message_user(
+                request,
+                (
+                    f'Produto "{duplicado.nome}" '
+                    f'unificado com sucesso em '
+                    f'"{principal.nome}".'
+                ),
+                level=messages.SUCCESS,
+            )
+
+        except ValidationError as exc:
+            self.message_user(
+                request,
+                str(exc),
+                level=messages.ERROR,
+            )
+
+        self.message_user(
+            request,
+            f"Unificação concluída com sucesso! Os dados foram migrados para o produto: {produto_principal.nome} (ID: {produto_principal.id}).",
+            level=messages.SUCCESS,
+        )
 
 @admin.register(SolicitacaoProduto)
 class SolicitacaoProdutoAdmin(admin.ModelAdmin):
@@ -59,6 +117,8 @@ class SolicitacaoProdutoAdmin(admin.ModelAdmin):
         - Um produto é criado ou reutilizado para cada solicitação aprovada.
         """
         for solicitacao in queryset:
+            solicitacao.status = SolicitacaoProduto.Status.APROVADO
+            solicitacao.save()
             solicitacao.aprovar()
 
     @admin.action(description="Rejeitar solicitações selecionadas")
@@ -73,4 +133,6 @@ class SolicitacaoProdutoAdmin(admin.ModelAdmin):
         - Nenhum produto é criado por esta ação.
         """
         for solicitacao in queryset:
+            solicitacao.status = SolicitacaoProduto.Status.REJEITADO # <--- REJEITADO
+            solicitacao.save()
             solicitacao.rejeitar()

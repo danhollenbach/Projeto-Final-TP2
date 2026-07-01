@@ -84,7 +84,7 @@ def test_us21_admin_pode_aprovar_solicitacao_por_acao_admin(client):
     solicitacao.refresh_from_db()
 
     assert resposta.status_code == 200
-    assert solicitacao.status == SolicitacaoProduto.Status.APROVADA
+    assert solicitacao.status == SolicitacaoProduto.Status.APROVADO
     assert Produto.objects.filter(codigo_barras="7893333333333").exists()
 
 
@@ -122,5 +122,5 @@ def test_us21_admin_pode_rejeitar_solicitacao_por_acao_admin(client):
     solicitacao.refresh_from_db()
 
     assert resposta.status_code == 200
-    assert solicitacao.status == SolicitacaoProduto.Status.REJEITADA
+    assert solicitacao.status == SolicitacaoProduto.Status.REJEITADO
     assert not Produto.objects.filter(codigo_barras="7894444444444").exists()
