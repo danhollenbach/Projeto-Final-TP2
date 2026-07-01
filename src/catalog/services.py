@@ -126,3 +126,60 @@ def _validate_active_product(
         raise ValidationError(
             "O produto principal deve estar ativo."
         )
+
+def merge_products(
+    principal,
+    duplicate,
+):
+
+    _validate_products(
+        principal,
+        duplicate,
+    )
+
+    _validate_same_product(
+        principal,
+        duplicate,
+    )
+
+    _validate_barcodes(
+        principal,
+        duplicate,
+    )
+
+    _validate_active_product(
+        principal,
+    )
+
+from django.db import transaction
+
+from .models import Produto, SolicitacaoProduto
+
+
+@transaction.atomic
+def merge_products(
+    principal: Produto,
+    duplicate: Produto,
+) -> Produto:
+    """
+    Unifica dois produtos do catálogo.
+
+    Todas as referências ao produto duplicado passam a apontar para o
+    produto principal. Após a atualização das referências, o produto
+    duplicado é removido do catálogo.
+    """
+
+    _validate_products(principal, duplicate)
+    _validate_same_product(principal, duplicate)
+    _validate_barcodes(principal, duplicate)
+    _validate_active_product(principal)
+
+    SolicitacaoProduto.objects.filter(
+        produto_criado=duplicate
+    ).update(
+        produto_criado=principal
+    )
+
+    duplicate.delete()
+
+    return principal
