@@ -9,6 +9,7 @@ produtos duplicados.
 """
 
 from django.db.models import QuerySet
+from django.core.exceptions import ValidationError
 
 from .models import Produto
 
@@ -65,3 +66,63 @@ def find_duplicate_candidates(produto: Produto) -> QuerySet[Produto]:
     attribute_matches = _find_by_attributes(produto)
 
     return (barcode_matches | attribute_matches).distinct()
+
+
+def _validate_products(
+    principal: Produto,
+    duplicate: Produto,
+) -> None:
+    """
+    Valida se ambos os produtos foram informados.
+    """
+
+    if principal is None:
+        raise ValidationError(
+            "O produto principal deve ser informado."
+        )
+
+    if duplicate is None:
+        raise ValidationError(
+            "O produto duplicado deve ser informado."
+        )
+    
+def _validate_same_product(
+    principal: Produto,
+    duplicate: Produto,
+) -> None:
+    """
+    Impede que um produto seja unificado consigo mesmo.
+    """
+
+    if principal.pk == duplicate.pk:
+        raise ValidationError(
+            "Um produto não pode ser unificado com ele mesmo."
+        )
+
+def _validate_barcodes(
+    principal: Produto,
+    duplicate: Produto,
+) -> None:
+    """
+    Garante consistência entre os códigos de barras.
+    """
+
+    if (
+        principal.codigo_barras
+        and duplicate.codigo_barras
+        and principal.codigo_barras != duplicate.codigo_barras
+    ):
+        raise ValidationError(
+            "Produtos com códigos de barras diferentes não podem ser unificados."
+        )
+def _validate_active_product(
+    principal: Produto,
+) -> None:
+    """
+    Garante que o produto principal esteja ativo.
+    """
+
+    if not principal.ativo:
+        raise ValidationError(
+            "O produto principal deve estar ativo."
+        )
