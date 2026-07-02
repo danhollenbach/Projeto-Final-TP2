@@ -117,8 +117,6 @@ class SolicitacaoProdutoAdmin(admin.ModelAdmin):
         - Um produto é criado ou reutilizado para cada solicitação aprovada.
         """
         for solicitacao in queryset:
-            solicitacao.status = SolicitacaoProduto.Status.APROVADO
-            solicitacao.save()
             solicitacao.aprovar()
 
     @admin.action(description="Rejeitar solicitações selecionadas")
@@ -133,6 +131,4 @@ class SolicitacaoProdutoAdmin(admin.ModelAdmin):
         - Nenhum produto é criado por esta ação.
         """
         for solicitacao in queryset:
-            solicitacao.status = SolicitacaoProduto.Status.REJEITADO # <--- REJEITADO
-            solicitacao.save()
             solicitacao.rejeitar()
