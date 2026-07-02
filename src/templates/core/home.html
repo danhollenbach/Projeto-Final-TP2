@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+
+    <!-- Título principal da página inicial -->
+    <h1>Bem-vindo ao sistema</h1>
+
+    <!-- Pequena descrição -->
+    <p>Escolha uma opção para continuar:</p>
+
+    <!-- Link para login -->
+    <a href="/accounts/login/">
+        <button>Entrar</button>
+    </a>
+
+    <!-- Link para cadastro -->
+    <a href="{% url 'users:register' %}">
+    <button>Criar conta</button>
+    </a>
+
+</body>
+</html>

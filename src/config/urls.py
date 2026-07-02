@@ -1,19 +1,31 @@
 ﻿"""Rotas principais do projeto."""
 
 from django.contrib import admin
-from django.http import HttpResponse
 from django.urls import include, path
-from django.views.generic import RedirectView
+from django.shortcuts import render
 
 
 def home_view(request):
-    """Página inicial simples para verificar se o projeto está rodando."""
-    return ""
+    """
+    View da página inicial do sistema.
+
+    Responsável por exibir a tela inicial (home.html),
+    onde o usuário pode escolher entre login e cadastro.
+    """
+    return render(request, "core/home.html")
 
 
 urlpatterns = [
-    path('', RedirectView.as_view(pattern_name='users:login', permanent=False), name='login'),
+    # Rota principal do sistema ("/")
+    # Agora aponta para a página inicial ao invés de redirecionar para login
+    path('', home_view, name='home'),
+
+    # Admin do Django
     path("admin/", admin.site.urls),
+
+    # Rotas do app de usuários (login, cadastro, etc.)
     path("accounts/", include("src.users.urls")),
+
+    # Rotas do catálogo (caso do projeto)
     path("catalog/", include("src.catalog.urls")),
 ]
