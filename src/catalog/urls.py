@@ -13,3 +13,8 @@ urlpatterns = [
         name="solicitar_produto",
     ),
 ]
+
+urlpatterns = [
+    # rota para criação de lista de produtos
+    path("lists/create/", views.create_list_view, name="create_list"),
+]

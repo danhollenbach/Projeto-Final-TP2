@@ -31,3 +31,13 @@ def solicitar_produto(request):
         "catalog/solicitar_produto.html",
         {"form": form},
     )
+
+def create_list_view(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+
+        if name:
+            # ainda não temos model → vamos simular depois
+            return redirect("catalog:create_list")
+
+    return render(request, "catalog/create_list.html")

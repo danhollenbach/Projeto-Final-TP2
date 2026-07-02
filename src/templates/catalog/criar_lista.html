@@ -1,0 +1,7 @@
+<h1>Criar lista de produtos</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="name" placeholder="Nome da lista">
+    <button type="submit">Criar</button>
+</form>
