@@ -13,8 +13,6 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.contrib import admin, messages
 from .models import Produto, SolicitacaoProduto
-from src.catalog.services import merge_products
-
 
 def _encontrar_codigo_barras(produto: Produto) -> QuerySet[Produto]:
     """
