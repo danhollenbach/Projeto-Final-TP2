@@ -8,3 +8,7 @@ from django.shortcuts import render
 def protected_view(request):
     """Exibe uma página acessível apenas para usuários autenticados."""
     return render(request, "users/protected.html")
+
+#View responsável por exibir a página de cadastro do usuário
+def register_view(request):
+    return render(request, "users/register.html")

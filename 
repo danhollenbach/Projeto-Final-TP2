@@ -1,0 +1,173 @@
+[1mdiff --git a/src/templates/registration/register.html b/src/templates/registration/register.html[m
+[1mnew file mode 100644[m
+[1mindex 0000000..fe5ebd9[m
+[1m--- /dev/null[m
+[1m+++ b/src/templates/registration/register.html[m
+[36m@@ -0,0 +1,23 @@[m
+[32m+[m[32m<!DOCTYPE html>[m
+[32m+[m[32m<html lang="pt-br">[m
+[32m+[m[32m<head>[m
+[32m+[m[32m    <meta charset="UTF-8">[m
+[32m+[m[32m    <title>Cadastro</title>[m
+[32m+[m[32m</head>[m
+[32m+[m[32m<body>[m
+[32m+[m
+[32m+[m[32m<h1>Criar conta</h1>[m
+[32m+[m
+[32m+[m[32m<form method="post">[m
+[32m+[m[32m    {% csrf_token %}[m
+[32m+[m
+[32m+[m[32m    {{ form.as_p }}[m
+[32m+[m
+[32m+[m[32m    <button type="submit">[m
+[32m+[m[32m        Cadastrar[m
+[32m+[m[32m    </button>[m
+[32m+[m
+[32m+[m[32m</form>[m
+[32m+[m
+[32m+[m[32m</body>[m
+[32m+[m[32m</html>[m
+\ No newline at end of file[m
+[1mdiff --git a/src/users/forms.py b/src/users/forms.py[m
+[1mnew file mode 100644[m
+[1mindex 0000000..64dfbae[m
+[1m--- /dev/null[m
+[1m+++ b/src/users/forms.py[m
+[36m@@ -0,0 +1,14 @@[m
+[32m+[m[32m"""Formulários relacionados aos usuários."""[m
+[32m+[m
+[32m+[m[32mfrom django.contrib.auth import get_user_model[m
+[32m+[m[32mfrom django.contrib.auth.forms import UserCreationForm[m
+[32m+[m
+[32m+[m[32mUser = get_user_model()[m
+[32m+[m
+[32m+[m
+[32m+[m[32mclass RegisterForm(UserCreationForm):[m
+[32m+[m[32m    """Formulário de cadastro de usuários."""[m
+[32m+[m
+[32m+[m[32m    class Meta:[m
+[32m+[m[32m        model = User[m
+[32m+[m[32m        fields = ("username", "email")[m
+\ No newline at end of file[m
+[1mdiff --git a/src/users/tests/test_register.py b/src/users/tests/test_register.py[m
+[1mnew file mode 100644[m
+[1mindex 0000000..7c3d34b[m
+[1m--- /dev/null[m
+[1m+++ b/src/users/tests/test_register.py[m
+[36m@@ -0,0 +1,101 @@[m
+[32m+[m[32mimport pytest[m
+[32m+[m[32mfrom django.urls import reverse[m
+[32m+[m[32mfrom django.contrib.auth import get_user_model[m
+[32m+[m
+[32m+[m
+[32m+[m[32m@pytest.mark.django_db[m
+[32m+[m[32mdef test_issue_2_register_exibe_formulario(client):[m
+[32m+[m[32m    response = client.get(reverse("users:register"))[m
+[32m+[m
+[32m+[m[32m    assert response.status_code == 200[m
+[32m+[m
+[32m+[m[32m@pytest.mark.django_db[m
+[32m+[m[32mdef test_issue_2_cadastro_valido_cria_usuario(client):[m
+[32m+[m[32m    User = get_user_model()[m
+[32m+[m
+[32m+[m[32m    resposta = client.post([m
+[32m+[m[32m        reverse("users:register"),[m
+[32m+[m[32m        {[m
+[32m+[m[32m            "username": "eduardo",[m
+[32m+[m[32m            "email": "eduardo@email.com",[m
+[32m+[m[32m            "password1": "Senha123!",[m
+[32m+[m[32m            "password2": "Senha123!",[m
+[32m+[m[32m        },[m
+[32m+[m[32m    )[m
+[32m+[m
+[32m+[m[32m    assert resposta.status_code == 302[m
+[32m+[m[32m    assert User.objects.filter(username="eduardo").exists()[m
+[32m+[m
+[32m+[m[32m@pytest.mark.django_db[m
+[32m+[m[32mdef test_issue_2_cadastro_com_senhas_diferentes_nao_cria_usuario(client):[m
+[32m+[m[32m    User = get_user_model()[m
+[32m+[m
+[32m+[m[32m    resposta = client.post([m
+[32m+[m[32m        reverse("users:register"),[m
+[32m+[m[32m        {[m
+[32m+[m[32m            "username": "eduardo",[m
+[32m+[m[32m            "email": "eduardo@email.com",[m
+[32m+[m[32m            "password1": "Senha123!",[m
+[32m+[m[32m            "password2": "Senha456!",[m
+[32m+[m[32m        },[m
+[32m+[m[32m    )[m
+[32m+[m
+[32m+[m[32m    assert resposta.status_code == 200[m
+[32m+[m[32m    assert not User.objects.filter(username="eduardo").exists()[m
+[32m+[m
+[32m+[m[32m@pytest.mark.django_db[m
+[32m+[m[32mdef test_issue_2_cadastro_com_username_existente_nao_cria_usuario(client):[m
+[32m+[m[32m    User = get_user_model()[m
+[32m+[m
+[32m+[m[32m    User.objects.create_user([m
+[32m+[m[32m        username="eduardo",[m
+[32m+[m[32m        email="eduardo@email.com",[m
+[32m+[m[32m        password="Senha123!",[m
+[32m+[m[32m    )[m
+[32m+[m
+[32m+[m[32m    resposta = client.post([m
+[32m+[m[32m        reverse("users:register"),[m
+[32m+[m[32m        {[m
+[32m+[m[32m            "username": "eduardo",[m
+[32m+[m[32m            "email": "novo@email.com",[m
+[32m+[m[32m            "password1": "Senha123!",[m
+[32m+[m[32m            "password2": "Senha123!",[m
+[32m+[m[32m        },[m
+[32m+[m[32m    )[m
+[32m+[m
+[32m+[m[32m    assert resposta.status_code == 200[m
+[32m+[m[32m    assert User.objects.filter(username="eduardo").count() == 1[m
+[32m+[m
+[32m+[m[32m@pytest.mark.django_db[m
+[32m+[m[32mdef test_issue_2_cadastro_sem_username_nao_cria_usuario(client):[m
+[32m+[m[32m    User = get_user_model()[m
+[32m+[m
+[32m+[m[32m    resposta = client.post([m
+[32m+[m[32m        reverse("users:register"),[m
+[32m+[m[32m        {[m
+[32m+[m[32m            "username": "",[m
+[32m+[m[32m            "email": "eduardo@email.com",[m
+[32m+[m[32m            "password1": "Senha123!",[m
+[32m+[m[32m            "password2": "Senha123!",[m
+[32m+[m[32m        },[m
+[32m+[m[32m    )[m
+[32m+[m
+[32m+[m[32m    assert resposta.status_code == 200[m
+[32m+[m[32m    assert User.objects.count() == 0[m
+[32m+[m
+[32m+[m[32m@pytest.mark.django_db[m
+[32m+[m[32mdef test_issue_2_cadastro_sem_confirmacao_de_senha_nao_cria_usuario(client):[m
+[32m+[m[32m    User = get_user_model()[m
+[32m+[m
+[32m+[m[32m    resposta = client.post([m
+[32m+[m[32m        reverse("users:register"),[m
+[32m+[m[32m        {[m
+[32m+[m[32m            "username": "eduardo",[m
+[32m+[m[32m            "email": "eduardo@email.com",[m
+[32m+[m[32m            "password1": "Senha123!",[m
+[32m+[m[32m            "password2": "",[m
+[32m+[m[32m        },[m
+[32m+[m[32m    )[m
+[32m+[m
+[32m+[m[32m    assert resposta.status_code == 200[m
+[32m+[m[32m    assert User.objects.count() == 0[m
+\ No newline at end of file[m
+[1mdiff --git a/src/users/urls.py b/src/users/urls.py[m
+[1mindex 50d567e..874fbe9 100644[m
+[1m--- a/src/users/urls.py[m
+[1m+++ b/src/users/urls.py[m
+[36m@@ -25,4 +25,9 @@[m [murlpatterns = [[m
+         views.protected_view,[m
+         name="protected",[m
+     ),[m
+[32m+[m[32m    path([m
+[32m+[m[32m        "register/",[m
+[32m+[m[32m        views.register_view,[m
+[32m+[m[32m        name="register",[m
+[32m+[m[32m    ),[m
+ ][m
