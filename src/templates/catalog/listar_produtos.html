@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Catálogo de produtos</title>
+</head>
+<body>
+    <main>
+        <h1>Catálogo de produtos</h1>
+
+        {% if produtos %}
+            <section aria-label="Produtos disponíveis">
+                {% for produto in produtos %}
+                    <article>
+                        <h2>
+                            <a href="{% url 'catalog:detalhe_produto' produto.id %}">
+                                {{ produto.nome }}
+                            </a>
+                        </h2>
+
+                        {% if produto.marca %}
+                            <p>Marca: {{ produto.marca }}</p>
+                        {% endif %}
+
+                        <p>Categoria: {{ produto.categoria }}</p>
+                        <p>Quantidade: {{ produto.quantidade }} {{ produto.unidade_medida }}</p>
+
+                        {% if produto.descricao %}
+                            <p>{{ produto.descricao }}</p>
+                        {% endif %}
+                    </article>
+                {% endfor %}
+            </section>
+        {% else %}
+            <p>Nenhum produto disponível no momento.</p>
+        {% endif %}
+    </main>
+</body>
+</html>

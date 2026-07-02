@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ produto.nome }}</title>
+</head>
+<body>
+    <main>
+        <p>
+            <a href="{% url 'catalog:listar_produtos' %}">Voltar para o catálogo</a>
+        </p>
+
+        <h1>{{ produto.nome }}</h1>
+
+        <dl>
+            <dt>Marca</dt>
+            <dd>{{ produto.marca|default:"Não informada" }}</dd>
+
+            <dt>Categoria</dt>
+            <dd>{{ produto.categoria }}</dd>
+
+            <dt>Código de barras</dt>
+            <dd>{{ produto.codigo_barras|default:"Não informado" }}</dd>
+
+            <dt>Quantidade</dt>
+            <dd>{{ produto.quantidade }} {{ produto.unidade_medida }}</dd>
+
+            <dt>Descrição</dt>
+            <dd>{{ produto.descricao|default:"Sem descrição cadastrada." }}</dd>
+
+            <dt>Status</dt>
+            <dd>{% if produto.ativo %}Ativo{% else %}Inativo{% endif %}</dd>
+        </dl>
+    </main>
+</body>
+</html>
