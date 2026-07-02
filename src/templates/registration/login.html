@@ -2,29 +2,251 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login · Mercadão</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --red-900: #7a0d13;
+            --red-700: #a8121a;
+            --red-600: #c9161c;
+            --red-500: #ea1d2c;
+            --red-400: #ff4d4d;
+            --cream: #fff5f0;
+            --ink: #3a0c0c;
+            --error: #ffd7d7;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Nunito Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(255,255,255,0.10), transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(0,0,0,0.15), transparent 50%),
+                linear-gradient(150deg, var(--red-900) 0%, var(--red-500) 55%, var(--red-400) 100%);
+            position: relative;
+            overflow: hidden;
+            color: var(--cream);
+            padding: 24px;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            filter: blur(2px);
+        }
+        body::before {
+            width: 420px;
+            height: 420px;
+            top: -120px;
+            left: -140px;
+        }
+        body::after {
+            width: 320px;
+            height: 320px;
+            bottom: -100px;
+            right: -100px;
+            background: rgba(0,0,0,0.10);
+        }
+
+        .card {
+            position: relative;
+            z-index: 2;
+            width: min(420px, 100%);
+            padding: 48px 36px 40px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 28px;
+            backdrop-filter: blur(6px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.35);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 18px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #ffffff, #ffe1d6);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+            font-size: 30px;
+        }
+
+        h1 {
+            font-family: 'Baloo 2', sans-serif;
+            font-weight: 800;
+            font-size: clamp(1.7rem, 5vw, 2.1rem);
+            margin: 0 0 8px;
+            letter-spacing: 0.3px;
+            text-shadow: 0 4px 14px rgba(0,0,0,0.25);
+        }
+
+        p.subtitle {
+            margin: 0 0 28px;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: rgba(255,255,255,0.88);
+            font-weight: 600;
+        }
+
+        .error-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 24px;
+            padding: 12px 16px;
+            border-radius: 14px;
+            background: rgba(0,0,0,0.18);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: var(--error);
+            font-weight: 700;
+            font-size: 0.92rem;
+            text-align: left;
+        }
+
+        form {
+            text-align: left;
+        }
+
+        .field {
+            margin: 0 0 20px;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.2px;
+            color: rgba(255,255,255,0.92);
+        }
+
+        /* Estiliza os inputs renderizados pelo Django ({{ form.username }} / {{ form.password }}) */
+        .field input {
+            width: 100%;
+            padding: 14px 16px;
+            font-family: 'Nunito Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--ink);
+            background: #fff5f0;
+            border: 2px solid transparent;
+            border-radius: 14px;
+            outline: none;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .field input::placeholder {
+            color: #b98d84;
+            font-weight: 500;
+        }
+
+        .field input:focus {
+            border-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.25);
+        }
+
+        button {
+            font-family: 'Baloo 2', sans-serif;
+            width: 100%;
+            margin-top: 6px;
+            padding: 18px 24px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+            color: var(--red-700);
+            background: linear-gradient(180deg, #ffffff, #ffe9e0);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.30), inset 0 -3px 0 rgba(0,0,0,0.06);
+            transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+        }
+
+        button:hover {
+            filter: brightness(1.03);
+            box-shadow: 0 16px 30px rgba(0,0,0,0.35), inset 0 -3px 0 rgba(0,0,0,0.06);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(2px) scale(0.99);
+        }
+
+        .foot-note {
+            margin-top: 24px;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.75);
+            font-weight: 600;
+        }
+
+        .foot-note a {
+            color: #ffe08a;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .foot-note a:hover {
+            text-decoration: underline;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            button, button:hover { transition: none; transform: none; }
+        }
+    </style>
 </head>
 <body>
-    <h1>Entrar no sistema</h1>
 
-    {% if form.errors %}
-        <p>Usuário ou senha inválidos.</p>
-    {% endif %}
+    <main class="card">
+        <div class="badge" aria-hidden="true">🔐</div>
 
-    <form method="post">
-        {% csrf_token %}
+        <h1>Entrar no sistema</h1>
+        <p class="subtitle">Acesse sua conta do Mercadão</p>
 
-        <p>
-            <label for="{{ form.username.id_for_label }}">Usuário</label>
-            {{ form.username }}
-        </p>
+        {% if form.errors %}
+            <div class="error-box">
+                <span aria-hidden="true">⚠️</span>
+                <span>Usuário ou senha inválidos.</span>
+            </div>
+        {% endif %}
 
-        <p>
-            <label for="{{ form.password.id_for_label }}">Senha</label>
-            {{ form.password }}
-        </p>
+        <form method="post">
+            {% csrf_token %}
 
-        <button type="submit">Entrar</button>
-    </form>
+            <div class="field">
+                <label for="{{ form.username.id_for_label }}">Usuário</label>
+                {{ form.username }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.password.id_for_label }}">Senha</label>
+                {{ form.password }}
+            </div>
+
+            <button type="submit">Entrar</button>
+        </form>
+
+        <p class="foot-note">Ainda não tem conta? <a href="/accounts/register/">Cadastre-se</a></p>
+    </main>
+
 </body>
 </html>

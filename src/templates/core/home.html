@@ -1,26 +1,206 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>Home</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mercadão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --red-900: #7a0d13;
+        --red-700: #a8121a;
+        --red-600: #c9161c;
+        --red-500: #ea1d2c;
+        --red-400: #ff4d4d;
+        --cream: #fff5f0;
+        --ink: #3a0c0c;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    body {
+        font-family: 'Nunito Sans', sans-serif;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+            radial-gradient(circle at 15% 20%, rgba(255,255,255,0.10), transparent 45%),
+            radial-gradient(circle at 85% 80%, rgba(0,0,0,0.15), transparent 50%),
+            linear-gradient(150deg, var(--red-900) 0%, var(--red-500) 55%, var(--red-400) 100%);
+        position: relative;
+        overflow: hidden;
+        color: var(--cream);
+    }
+
+    /* textura sutil de "cesta de compras" via formas circulares flutuantes */
+    body::before,
+    body::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.06);
+        filter: blur(2px);
+    }
+    body::before {
+        width: 420px;
+        height: 420px;
+        top: -120px;
+        left: -140px;
+    }
+    body::after {
+        width: 320px;
+        height: 320px;
+        bottom: -100px;
+        right: -100px;
+        background: rgba(0,0,0,0.10);
+    }
+
+    .card {
+        position: relative;
+        z-index: 2;
+        width: min(420px, 90vw);
+        padding: 48px 36px 40px;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255,255,255,0.18);
+        border-radius: 28px;
+        backdrop-filter: blur(6px);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.35);
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 64px;
+        height: 64px;
+        margin-bottom: 18px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #ffffff, #ffe1d6);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+        font-size: 30px;
+    }
+
+    h1 {
+        font-family: 'Baloo 2', sans-serif;
+        font-weight: 800;
+        font-size: clamp(2.2rem, 6vw, 2.8rem);
+        margin: 0 0 8px;
+        letter-spacing: 0.5px;
+        text-shadow: 0 4px 14px rgba(0,0,0,0.25);
+    }
+
+    h1 span {
+        color: #ffe08a;
+    }
+
+    p.subtitle {
+        margin: 0 0 34px;
+        font-size: 1.05rem;
+        line-height: 1.5;
+        color: rgba(255,255,255,0.88);
+        font-weight: 600;
+    }
+
+    .actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+    }
+
+    a.btn-link {
+        text-decoration: none;
+        width: 100%;
+        display: block;
+    }
+
+    button {
+        font-family: 'Baloo 2', sans-serif;
+        width: 100%;
+        padding: 18px 24px;
+        font-size: 1.15rem;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        border-radius: 16px;
+        border: none;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    }
+
+    button:active {
+        transform: translateY(2px) scale(0.99);
+    }
+
+    .btn-primary {
+        color: var(--red-700);
+        background: linear-gradient(180deg, #ffffff, #ffe9e0);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.30), inset 0 -3px 0 rgba(0,0,0,0.06);
+    }
+
+    .btn-primary:hover {
+        filter: brightness(1.03);
+        box-shadow: 0 16px 30px rgba(0,0,0,0.35), inset 0 -3px 0 rgba(0,0,0,0.06);
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+        color: #ffffff;
+        background: linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.06));
+        border: 2px solid rgba(255,255,255,0.55);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255,255,255,0.20);
+        transform: translateY(-2px);
+    }
+
+    .foot-note {
+        margin-top: 28px;
+        font-size: 0.8rem;
+        color: rgba(255,255,255,0.65);
+        font-weight: 600;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        button, .btn-primary:hover, .btn-secondary:hover { transition: none; transform: none; }
+    }
+</style>
 </head>
 <body>
 
-    <!-- Título principal da página inicial -->
-    <h1>Bem-vindo ao sistema</h1>
+    <main class="card">
+        <div class="badge" aria-hidden="true">🛒</div>
 
-    <!-- Pequena descrição -->
-    <p>Escolha uma opção para continuar:</p>
+        <!-- Título principal da página inicial -->
+        <h1>Mercad<span>ão</span></h1>
 
-    <!-- Link para login -->
-    <a href="/accounts/login/">
-        <button>Entrar</button>
-    </a>
+        <!-- Pequena descrição -->
+        <p class="subtitle">Tudo o que você precisa, entregue rapidinho.<br>Escolha uma opção para continuar:</p>
 
-    <!-- Link para cadastro -->
-    <a href="{% url 'users:register' %}">
-    <button>Criar conta</button>
-    </a>
+        <div class="actions">
+            <!-- Link para login -->
+            <a class="btn-link" href="/accounts/login/">
+                <button class="btn-primary">Entrar</button>
+            </a>
+
+            <!-- Link para cadastro -->
+            <a class="btn-link" href="/accounts/register/">
+                <button class="btn-secondary">Criar conta</button>
+            </a>
+        </div>
+
+        <p class="foot-note">Rápido, prático e sempre pertinho de você.</p>
+    </main>
 
 </body>
 </html>
