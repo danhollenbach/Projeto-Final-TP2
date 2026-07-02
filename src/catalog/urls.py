@@ -17,4 +17,6 @@ urlpatterns = [
 urlpatterns = [
     # rota para criação de lista de produtos
     path("lists/create/", views.create_list_view, name="create_list"),
+
+    path("dashboard/", views.dashboard_view, name="dashboard"),
 ]

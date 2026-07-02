@@ -5,6 +5,7 @@ from django.urls import include, path
 from django.shortcuts import render
 
 
+
 def home_view(request):
     """
     View da página inicial do sistema.
@@ -28,4 +29,6 @@ urlpatterns = [
 
     # Rotas do catálogo (caso do projeto)
     path("catalog/", include("src.catalog.urls")),
+    
+    
 ]

@@ -45,3 +45,11 @@ def create_list_view(request):
             return redirect("catalog:create_list")
 
     return render(request, "catalog/create_list.html")
+
+@login_required
+def dashboard_view(request):
+    lists = ProductList.objects.filter(user=request.user)
+
+    return render(request, "core/dashboard.html", {
+        "lists": lists
+    })
