@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
 from src.catalog.forms import SolicitacaoProdutoForm
+from src.catalog.models import ProductList
 
 
 @login_required
@@ -37,7 +38,10 @@ def create_list_view(request):
         name = request.POST.get("name")
 
         if name:
-            # ainda não temos model → vamos simular depois
+            ProductList.objects.create(
+                name=name,
+                user=request.user
+            )
             return redirect("catalog:create_list")
 
     return render(request, "catalog/create_list.html")

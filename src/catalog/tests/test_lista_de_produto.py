@@ -2,6 +2,8 @@ import pytest
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
+from src.catalog.models import ProductList
+
 User = get_user_model()
 
 
@@ -23,3 +25,4 @@ def test_criar_lista_de_produtos_com_sucesso(client):
 
     # deve redirecionar após criação
     assert response.status_code == 302
+    assert ProductList.objects.filter(name="Mercado").exists()

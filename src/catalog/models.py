@@ -7,6 +7,7 @@ Histórias relacionadas:
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 
 class Produto(models.Model):
     """Produto de mercado cadastrado no sistema.""" 
@@ -98,3 +99,15 @@ class SolicitacaoProduto(models.Model):
         
         self.status = self.Status.REJEITADO
         self.save()
+
+class ProductList(models.Model):
+    name = models.CharField(max_length=255)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="product_lists"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
