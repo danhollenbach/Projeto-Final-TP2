@@ -59,7 +59,7 @@ class SolicitacaoProduto(models.Model):
     def aprovar(self):
         """Aprova a solicitação e cria ou reaproveita o produto no catálogo."""
         if self.status != self.Status.PENDENTE:
-            return None
+            raise ValueError("Apenas solicitações pendentes podem ser alteradas.")
         
         self.status = self.Status.APROVADO
         
@@ -94,7 +94,7 @@ class SolicitacaoProduto(models.Model):
     def rejeitar(self):
         """Rejeita a solicitação e não cria nenhum produto."""
         if self.status != self.Status.PENDENTE:
-            return None
+            raise ValueError("Apenas solicitações pendentes podem ser alteradas.")
         
         self.status = self.Status.REJEITADO
         self.save()
